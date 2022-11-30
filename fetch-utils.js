@@ -11,17 +11,28 @@ export function getUser() {
 
 export async function getFamilies() {
     // fetch all families and their bunnies
+    const response = await client
+        .from('loving_families')
+        .select('*, fuzzy_bunnies (*)')
+        .match({ 'fuzzy_bunnies.user_id': client.auth.session().user.id });
     // return checkError(response);
+    return checkError(response);
 }
 
 export async function deleteBunny(id) {
     // delete a single bunny using the id argument
+    const response = await client.from('fuzzy_bunnies').delete().match({ id: id }).single();
     // return checkError(response);
+    return checkError(response);
 }
 
 export async function createBunny(bunny) {
     // create a bunny using the bunny argument
+    const response = await client
+        .from('fuzzy_bunnies')
+        .insert({ ...bunny, user_id: client.auth.session().user.id });
     // return checkError(response);
+    return checkError(response);
 }
 
 // MARTHA STEWART (PRE-MADE) FUNCTIONS
